@@ -53,7 +53,10 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     compileOnly project(":common")
-    compileOnly "xaero.minimap:xaerominimap-common-${minecraft_version}:${xaero_minimap_mod_version}"
+    // compileOnly "xaero.minimap:xaerominimap-common-${minecraft_version}:${xaero_minimap_mod_version}"
+    implementation "xaero.minimap:xaerominimap-forge-${minecraft_version}:${xaero_minimap_mod_version}:dev"
+    // implementation fg.deobf("xaero.lib:xaerolib-forge-${minecraft_version}:+")
+    // implementation fg.deobf("xaero.minimap:xaerominimap-forge-${minecraft_version}:${xaero_minimap_mod_version}")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 }
 
@@ -63,3 +66,5 @@ jar {
             "MixinConfigs": "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"
     ])
 }
+
+// dependencies {
