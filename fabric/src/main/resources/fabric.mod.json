@@ -13,7 +13,7 @@
   "icon": "assets/${mod_id}/${mod_id}.png",
   "environment": "*",
   "entrypoints": {
-    "main": ["dev.dragonofshuu.shuusxaeroworldborder.ExampleMod"]
+    "main": ["dev.dragonofshuu.shuusxaeroworldborder.ShuuXaeroWB"]
   },
   "mixins": ["${mod_id}.mixins.json", "${mod_id}.fabric.mixins.json"],
   "depends": {

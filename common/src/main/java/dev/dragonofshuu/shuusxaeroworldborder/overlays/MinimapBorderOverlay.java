@@ -71,9 +71,9 @@ public class MinimapBorderOverlay {
         if (!context.circleShape) {
             return true;
         }
-        double offX = pixelX + 0.5 - context.half;
-        double offY = pixelY + 0.5 - context.half;
-        return offX * offX + offY * offY <= context.half * context.half;
+        double offX = MinimapBorderOverlay.toLogicalOffsetX(pixelX, context);
+        double offY = MinimapBorderOverlay.toLogicalOffsetY(pixelY, context);
+        return offX * offX + offY * offY <= context.logicalHalf * context.logicalHalf;
     }
 
     private static boolean isOutsideWorldBorder(int pixelX, int pixelY, MinimapBorderOverlayContext context) {
@@ -83,31 +83,35 @@ public class MinimapBorderOverlay {
     }
 
     private static double toWorldX(int pixelX, int pixelY, MinimapBorderOverlayContext context) {
-        double offX = pixelX + 0.5 - context.half;
-        double offY = pixelY + 0.5 - context.half;
-        double zoomedOffX = offX / context.zoom;
-        double zoomedOffY = offY / context.zoom;
-        return context.playerX + context.ps * zoomedOffX + context.pc * zoomedOffY;
+        double offX = MinimapBorderOverlay.toLogicalOffsetX(pixelX, context);
+        double offY = MinimapBorderOverlay.toLogicalOffsetY(pixelY, context);
+        double blockOffX = offX * 2.0 * context.mapScale / context.zoom;
+        double blockOffY = offY * 2.0 * context.mapScale / context.zoom;
+        return context.playerX + context.ps * blockOffX + context.pc * blockOffY;
     }
 
     private static double toWorldZ(int pixelX, int pixelY, MinimapBorderOverlayContext context) {
-        double offX = pixelX + 0.5 - context.half;
-        double offY = pixelY + 0.5 - context.half;
-        double zoomedOffX = offX / context.zoom;
-        double zoomedOffY = offY / context.zoom;
-        return context.playerZ + context.ps * zoomedOffY - context.pc * zoomedOffX;
+        double offX = MinimapBorderOverlay.toLogicalOffsetX(pixelX, context);
+        double offY = MinimapBorderOverlay.toLogicalOffsetY(pixelY, context);
+        double blockOffX = offX * 2.0 * context.mapScale / context.zoom;
+        double blockOffY = offY * 2.0 * context.mapScale / context.zoom;
+        return context.playerZ + context.ps * blockOffY - context.pc * blockOffX;
+    }
+
+    private static double toLogicalOffsetX(int pixelX, MinimapBorderOverlayContext context) {
+        double logicalX = (pixelX + 0.5) * context.logicalMapSize / context.displayedMapSize;
+        return logicalX - context.logicalHalf;
+    }
+
+    private static double toLogicalOffsetY(int pixelY, MinimapBorderOverlayContext context) {
+        double logicalY = (pixelY + 0.5) * context.logicalMapSize / context.displayedMapSize;
+        return logicalY - context.logicalHalf;
     }
 
     private static boolean isOutsideOrOffMinimap(
             int pixelX,
             int pixelY,
             MinimapBorderOverlayContext context) {
-        // if (pixelX < 0 || pixelY < 0 || pixelX >= context.displayedMapSize || pixelY >= context.displayedMapSize) {
-        //     return true;
-        // }
-        // if (!MinimapBorderOverlay.isPixelOnMinimapShape(pixelX, pixelY, context)) {
-        //     return true;
-        // }
         return MinimapBorderOverlay.isOutsideWorldBorder(pixelX, pixelY, context);
     }
 }

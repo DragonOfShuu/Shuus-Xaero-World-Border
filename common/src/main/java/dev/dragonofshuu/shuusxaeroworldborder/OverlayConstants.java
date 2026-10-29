@@ -6,11 +6,6 @@ import net.minecraft.world.level.border.BorderStatus;
 import java.awt.Color;
 
 public class OverlayConstants {
-    public static final int MINIMAP_INSET = 3;
-    // public static final long STRIPE_ANIMATION_MS = 150L;
-
-    // public static final int STRIPE_COLOR = 0x903060FF;
-    // public static final int BORDER_OUTLINE_COLOR = 0xFF6FA0FF;
     public static final int STRIPE_PERIOD = 16;
     public static final int STRIPE_WIDTH = 6;
 

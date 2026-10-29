@@ -5,7 +5,7 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
-  "client": ["MixinMinecraft", "MixinGuiMinimapDraw"],
+  "client": ["MixinRenderWorldBorderStripes"],
   "server": [],
   "injectors": {
     "defaultRequire": 1

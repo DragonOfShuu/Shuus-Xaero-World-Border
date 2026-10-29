@@ -12,7 +12,7 @@ import xaero.common.graphics.CustomVertexConsumers;
 import xaero.common.minimap.MinimapProcessor;
 
 @Mixin(value = MinimapProcessor.class, remap = false)
-public abstract class MixinGuiMinimapDraw {
+public abstract class MixinRenderWorldBorderStripes {
     @Inject(method = "onRender", at = @At("TAIL"), remap = false)
     private void shuusxaerowb$renderWorldBorderStripes(
             GuiGraphics guiGraphics,
@@ -26,7 +26,7 @@ public abstract class MixinGuiMinimapDraw {
             float partial,
             CustomVertexConsumers cvc,
             CallbackInfo ci) {
-        MinimapBorderOverlayContext context = MinimapBorderOverlayContext.createRenderContext((MinimapProcessor) (Object) this, x, y, width, height, boxSize, partial);
+        MinimapBorderOverlayContext context = MinimapBorderOverlayContext.createRenderContext((MinimapProcessor) (Object) this, x, y, width, height, scale, size, boxSize, partial);
         if (context == null) {
             return;
         }
