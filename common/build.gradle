@@ -14,9 +14,16 @@ legacyForge {
     }
 }
 
+repositories {
+    maven {
+        url "https://chocolateminecraft.com/maven"
+    }
+}
+
 dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    compileOnly "xaero.minimap:xaerominimap-common-${minecraft_version}:${xaero_minimap_mod_version}"
 }
 
 configurations {

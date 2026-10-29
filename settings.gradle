@@ -13,10 +13,10 @@ pluginManagement {
             name = 'Sponge Snapshots'
             url = 'https://repo.spongepowered.org/repository/maven-public/'
         }
-        // maven {
-        //     url "https://chocolateminecraft.com/maven"
-        //     name "Xaero's Maven"
-        // }
+        maven {
+            url "https://chocolateminecraft.com/maven"
+            name "Xaero's Maven"
+        }
     }
 }
 
