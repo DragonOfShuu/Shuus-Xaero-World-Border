@@ -3,6 +3,12 @@ plugins {
     id 'net.neoforged.moddev.legacyforge'
 }
 
+repositories {
+    maven {
+        url "https://chocolateminecraft.com/maven"
+    }
+}
+
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
 
@@ -47,6 +53,7 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     compileOnly project(":common")
+    compileOnly "xaero.minimap:xaerominimap-common-${minecraft_version}:${xaero_minimap_mod_version}"
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 }
 
