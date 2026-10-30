@@ -26,7 +26,13 @@ ordering = "NONE"
 side = "BOTH"
 [[dependencies.${mod_id}]]
     modId="xaerominimap"
-    mandatory=true # Set to false if you want it to be an optional dependency
-    versionRange="[26.6.0,)" # Demands version 26.6.0 or newer
-    ordering="AFTER" # Ensures Xaero's Minimap loads before your mod
-    side="BOTH" # Or "CLIENT" if your mod integration is client-side only
+    mandatory=false
+    versionRange="[26.6.0,)"
+    ordering="AFTER" 
+    side="BOTH" 
+[[dependencies.${mod_id}]]
+    modId="xaeroworldmap"
+    mandatory=false
+    versionRange="[1.47.0,)"
+    ordering="AFTER" 
+    side="BOTH" 

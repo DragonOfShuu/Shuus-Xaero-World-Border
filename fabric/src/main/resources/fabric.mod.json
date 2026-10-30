@@ -15,15 +15,15 @@
   "entrypoints": {
     "main": ["dev.dragonofshuu.shuusxaeroworldborder.ShuuXaeroWB"]
   },
-  "mixins": ["${mod_id}.mixins.json", "${mod_id}.fabric.mixins.json"],
+  "mixins": ["${mod_id}.minimap.mixins.json", "${mod_id}.worldmap.mixins.json", "${mod_id}.fabric.mixins.json"],
   "depends": {
     "fabricloader": ">=0.14",
     "fabric": "*",
     "minecraft": "${minecraft_version}",
-    "java": ">=17",
-    "xaerominimap": ">=26.6.0"
+    "java": ">=17"
   },
   "suggests": {
-    "another-mod": "*"
+    "xaerominimap": ">=26.6.0",
+    "xaeroworldmap": ">=1.47.0"
   }
 }

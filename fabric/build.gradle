@@ -20,6 +20,7 @@ dependencies {
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":common")
     modCompileOnly "xaero.minimap:xaerominimap-fabric-${minecraft_version}:${xaero_minimap_mod_version}"
+    modCompileOnly "xaero.map:xaeroworldmap-fabric-${minecraft_version}:${xaero_worldmap_mod_version}"
 }
 
 loom {
