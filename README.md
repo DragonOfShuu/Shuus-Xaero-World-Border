@@ -36,3 +36,7 @@ Two things worth knowing:
 ### Why Fabric goes through Gradle
 
 Fabric Loom has no VS Code integration, so there is no generated argument file to reuse. The Gradle task owns the classpath and Loom's dev JVM arguments; `-Pdebug` (see `fabric/build.gradle`) adds the JDWP agent and `launch.json` attaches to it.
+
+# Note on Generative AI
+
+**Local artificial intelligence** was used in the making of the mod to help speed up the process of reverse engineering, and code generation. A **human** made the art, mod design, and code organization/design/cleanup. Real effort was put into the production of this mod. Users deserve to know what went into making a project.
