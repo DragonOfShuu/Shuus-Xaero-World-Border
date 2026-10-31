@@ -24,7 +24,7 @@ public class OverlayConstants {
 
     /** Stripe fill, drawn outside of the border. Darker than vanilla's border colour. */
     public static int getStripeColor(WorldBorderState border) {
-        Color color = new Color((128 << 24) | border.status.getColor(), true);
+        Color color = new Color((200 << 24) | border.status.getColor(), true);
         return color.darker().getRGB();
     }
 

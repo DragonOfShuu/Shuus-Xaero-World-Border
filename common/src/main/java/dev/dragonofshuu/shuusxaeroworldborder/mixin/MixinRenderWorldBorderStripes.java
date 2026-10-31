@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import xaero.common.graphics.CustomVertexConsumers;
 import xaero.common.minimap.MinimapProcessor;
 
-@Mixin(value = MinimapProcessor.class, remap = false)
+@Mixin(value = MinimapProcessor.class)
 public abstract class MixinRenderWorldBorderStripes {
     @Inject(method = "onRender", at = @At("TAIL"), remap = false)
     private void shuusxaerowb$renderWorldBorderStripes(

@@ -23,6 +23,14 @@ import xaero.map.gui.GuiMap;
  * Xaero draws once the map tiles are on screen. Everything else - waypoints, the footstep trail, the
  * player arrow, the compass and coordinate readout, and the widgets drawn by {@code super.render}
  * - comes after it, so all of them stay on top of the overlay.</p>
+ *
+ * <p>Note how remapping is split on this class. {@code GuiMap} is Xaero's own class, so its fields and
+ * the {@code MapElementRenderHandler.render} call site keep their names in every environment and are
+ * left alone by {@code remap = false} on the mixin. {@code GuiMap.render} is different: it overrides
+ * {@code Screen.render}, so the loader renames it - {@code render} in a development environment,
+ * {@code m_88315_} on production Forge, {@code method_25394} on production Fabric. Only that one
+ * selector is remapped, by {@code remap = true} on the injector, which makes the annotation processor
+ * record the resolved name in the refmap.</p>
  */
 @Mixin(value = GuiMap.class, remap = false)
 public abstract class MixinWorldmapRenderWorldBorderStripes {
@@ -30,6 +38,11 @@ public abstract class MixinWorldmapRenderWorldBorderStripes {
     /**
      * The one and only call to {@code MapElementRenderHandler.render} in {@code GuiMap.render}.
      * Written out in pieces only so it stays readable.
+     *
+     * <p>The build prints "Unable to locate method mapping for @At(INVOKE.&lt;target&gt;)" for this
+     * string on Forge and it can be ignored: Xaero's method name is unmapped in every environment, so
+     * there is nothing to look up. The lookup still has to be attempted, because the descriptor names
+     * Minecraft classes whose names Fabric does need rewritten.</p>
      */
     private static final String MAP_ELEMENTS_RENDER =
             "Lxaero/map/element/MapElementRenderHandler;render("
@@ -55,9 +68,10 @@ public abstract class MixinWorldmapRenderWorldBorderStripes {
     private double scale;
 
     @Inject(
+            // Remapped: GuiMap.render overrides Screen.render, so the loader renames it.
             method = "render",
             at = @At(value = "INVOKE", target = MAP_ELEMENTS_RENDER, shift = At.Shift.BEFORE),
-            remap = false)
+            remap = true)
     private void shuusxaerowb$renderWorldmapWorldBorderStripes(
             GuiGraphics guiGraphics,
             int scaledMouseX,

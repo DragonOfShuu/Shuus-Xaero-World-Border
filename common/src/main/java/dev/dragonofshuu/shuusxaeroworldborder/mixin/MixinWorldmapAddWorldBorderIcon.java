@@ -20,7 +20,13 @@ import xaero.map.gui.GuiMap;
 @Mixin(value = GuiMap.class, remap = false)
 public abstract class MixinWorldmapAddWorldBorderIcon {
 
-    @Inject(method = "init", at = @At("TAIL"), remap = false)
+    /**
+     * {@code GuiMap.init} overrides {@code Screen.init}, so its name is obfuscated by whichever
+     * mapping the running loader uses. {@code remap = true} makes the Mixin annotation processor write
+     * the resolved name into the refmap, which the runtime then applies. The mixin class itself stays
+     * {@code remap = false} because everything else it touches is Xaero's own, unmapped code.
+     */
+    @Inject(method = "init", at = @At("TAIL"), remap = true)
     private void shuusxaerowb$addWorldmapWorldBorderIcon(CallbackInfo ci) {
         ((GuiMap) (Object) this).addButton(new WorldmapWorldBorderToggleButton());
     }
