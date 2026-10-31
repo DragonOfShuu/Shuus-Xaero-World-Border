@@ -22,10 +22,47 @@ public class OverlayConstants {
      */
     public static final int DESTINATION_COLOR = 0xFFFFFFFF;
 
+    /** Stripe opacity, as a fraction of fully opaque. */
+    public static final float STRIPE_OPACITY = 0.65f;
+    /**
+     * Underlay opacity, as a fraction of fully opaque. Lower than {@link #STRIPE_OPACITY} so the
+     * stripes still read clearly on top of it.
+     */
+    public static final float UNDERLAY_OPACITY = 0.40f;
+    /** Stripe brightness, as a fraction of vanilla's border colour. Below 1 darkens it. */
+    public static final float STRIPE_SHADE = 0.7f;
+    /** Underlay brightness - darker than the stripes, so the hatching stays the bright layer. */
+    public static final float UNDERLAY_SHADE = 0.49f;
+
     /** Stripe fill, drawn outside of the border. Darker than vanilla's border colour. */
     public static int getStripeColor(WorldBorderState border) {
-        Color color = new Color((200 << 24) | border.status.getColor(), true);
-        return color.darker().getRGB();
+        return borderColor(border, STRIPE_SHADE, STRIPE_OPACITY);
+    }
+
+    /**
+     * Flat fill laid under the stripes, covering all of the area outside the border rather than
+     * only the stripes themselves. Darker and fainter than {@link #getStripeColor}, so it softens
+     * the map behind the hatching without competing with it.
+     */
+    public static int getStripeUnderlayColor(WorldBorderState border) {
+        return borderColor(border, UNDERLAY_SHADE, UNDERLAY_OPACITY);
+    }
+
+    /**
+     * Packs vanilla's border colour into an ARGB int, scaled by {@code shade} and given the alpha
+     * {@code opacity} describes.
+     *
+     * <p>{@link BorderStatus#getColor()} returns {@code 0x00RRGGBB} with the alpha byte left empty,
+     * so the alpha has to be supplied here. The channels are reassembled rather than OR-ed into the
+     * raw value, which keeps that correct whatever vanilla ever puts in the alpha byte.</p>
+     */
+    private static int borderColor(WorldBorderState border, float shade, float opacity) {
+        Color color = new Color(border.status.getColor());
+        int alpha = Math.round(255.0f * opacity);
+        int red = Math.round(color.getRed() * shade);
+        int green = Math.round(color.getGreen() * shade);
+        int blue = Math.round(color.getBlue() * shade);
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 
     /** Solid outline, drawn on the border itself. Brighter than vanilla's border colour. */

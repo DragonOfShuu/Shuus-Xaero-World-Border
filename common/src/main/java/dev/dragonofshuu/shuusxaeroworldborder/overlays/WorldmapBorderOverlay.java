@@ -37,7 +37,10 @@ public final class WorldmapBorderOverlay {
         drawPlayerToTargetLine(guiGraphics, context);
     }
 
-    /** Diagonal hatching covering every part of the screen that lies outside of the border. */
+    /**
+     * Diagonal hatching covering every part of the screen that lies outside of the border: a flat
+     * underlay over the whole area, with the stripes on top of it.
+     */
     private static void drawStripedOutsideBorder(GuiGraphics guiGraphics, WorldmapBorderOverlayContext context) {
         int color = OverlayConstants.getStripeColor(context.border);
         long phase = OverlayConstants.stripePhaseOffset(context.border.stripePhase);
@@ -51,6 +54,8 @@ public final class WorldmapBorderOverlay {
         int width = context.screenWidth;
         int height = context.screenHeight;
 
+        drawUnderlay(guiGraphics, context, left, top, right, bottom);
+
         GuiQuadBatch batch = new GuiQuadBatch(guiGraphics);
 
         // The four rectangles that make up "screen minus border".
@@ -58,6 +63,28 @@ public final class WorldmapBorderOverlay {
         drawStripes(batch, guiGraphics, 0, bottom, width, height, color, phase);
         drawStripes(batch, guiGraphics, 0, top, left, bottom, color, phase);
         drawStripes(batch, guiGraphics, right, top, width, bottom, color, phase);
+    }
+
+    /**
+     * Flat fill under the stripes, covering all of "screen minus border". The same four rectangles
+     * the stripes are drawn in, so the two layers line up exactly; four quads in one batch.
+     */
+    private static void drawUnderlay(
+            GuiGraphics guiGraphics,
+            WorldmapBorderOverlayContext context,
+            int left,
+            int top,
+            int right,
+            int bottom) {
+        int color = OverlayConstants.getStripeUnderlayColor(context.border);
+
+        GuiQuadBatch batch = new GuiQuadBatch(guiGraphics);
+        batch.begin();
+        fillClamped(batch, context, 0, 0, context.screenWidth, top, color);
+        fillClamped(batch, context, 0, bottom, context.screenWidth, context.screenHeight, color);
+        fillClamped(batch, context, 0, top, left, bottom, color);
+        fillClamped(batch, context, right, top, context.screenWidth, bottom, color);
+        batch.end();
     }
 
     /** Solid line following the border, sitting just inside it. */

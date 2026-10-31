@@ -71,16 +71,16 @@ public final class MinimapBorderOverlayContext {
     /**
      * Returns {@code null} when there is nothing to draw this frame (no level, no camera entity,
      * or a degenerate minimap).
+     *
+     * <p>{@code x} and {@code y} are the top-left of the minimap frame in Xaero's scaled coordinate
+     * system, the same units {@code MinimapRenderer.renderMinimap} is called with; {@code scale} is
+     * that system's pixels per GUI pixel.</p>
      */
     public static MinimapBorderOverlayContext createRenderContext(
             MinimapProcessor minimapProcessor,
             int x,
             int y,
-            int width,
-            int height,
             double scale,
-            int size,
-            int boxSize,
             float partial) {
         Minecraft mc = Minecraft.getInstance();
         WorldBorderState border = WorldBorderState.fromLevel(mc.level);

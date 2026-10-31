@@ -20,16 +20,35 @@ public class MinimapBorderOverlay {
     /** Thickness of the line drawn from the player to the border, in device pixels. */
     private static final float PLAYER_LINE_WIDTH = 3.0f;
 
-    /** Decides whether one pixel of the minimap belongs to the layer being drawn. */
-    @FunctionalInterface
-    private interface PixelFilter {
-        boolean test(int pixelX, int pixelY, MinimapBorderOverlayContext context);
-    }
-
-    /** Diagonal hatching covering every minimap pixel that falls outside of the border. */
+    /**
+     * Diagonal hatching covering every minimap pixel that falls outside of the border: a flat
+     * underlay across the whole area, with the stripes on top of it.
+     *
+     * <p>Both layers come out of a single scan. The shape and border tests are the only expensive
+     * part of a pixel and they run once, rather than once per layer as two separate scans would do,
+     * and everything goes into one batch. Submission order is the z-order here: in any row the
+     * underlay run is queued before the stripes sitting on it and runs in a row never overlap, so
+     * the stripes always land on top without needing a second pass.</p>
+     */
     public static void drawStripedOutsideBorder(GuiGraphics guiGraphics, MinimapBorderOverlayContext context) {
-        fillRuns(guiGraphics, context, OverlayConstants.getStripeColor(context.border),
-                MinimapBorderOverlay::isStripePixel, true);
+        // Nothing to hatch once the border lies beyond the minimap, which is the common case. Worth
+        // testing up front, so that case skips the scan entirely instead of running it to empty.
+        if (borderCoversMinimap(context)) {
+            return;
+        }
+
+        // Anything Xaero queued through GuiGraphics has to hit the GPU before our batch does.
+        guiGraphics.flush();
+
+        int stripeColor = OverlayConstants.getStripeColor(context.border);
+        int underlayColor = OverlayConstants.getStripeUnderlayColor(context.border);
+
+        GuiQuadBatch batch = new GuiQuadBatch(guiGraphics);
+        batch.begin();
+        for (int pixelY = 0; pixelY < context.displayedMapSize; pixelY++) {
+            fillRow(batch, pixelY, context, stripeColor, underlayColor);
+        }
+        batch.end();
     }
 
     /** Solid line following the border, drawn on it and trimmed to the minimap shape. */
@@ -233,92 +252,98 @@ public class MinimapBorderOverlay {
     }
 
     /**
-     * Scans the minimap row by row, collapses the pixels accepted by {@code filter} into horizontal
-     * runs and submits each run as one quad.
+     * True when the border lies beyond the edge of the minimap, so no pixel of the minimap falls
+     * outside it and there is nothing to hatch.
      *
-     * @param stripeAlignedOnly true when the filter can only accept pixels that are already on a
-     *     stripe, which lets the scan jump whole stripe gaps in one step instead of testing them
+     * <p>The minimap transform is a rotation about the player plus a uniform scale, so every pixel
+     * lands within {@code logicalHalf * blocksPerPixel} blocks of the player on each axis, grown by
+     * {@code |ps| + |pc|} to cover a square minimap at any rotation. A border at least that far out
+     * on all four sides therefore hides nothing, and the whole per pixel scan can be skipped.</p>
      */
-    private static void fillRuns(
-            GuiGraphics guiGraphics,
-            MinimapBorderOverlayContext context,
-            int color,
-            PixelFilter filter,
-            boolean stripeAlignedOnly) {
-        // Anything Xaero queued through GuiGraphics has to hit the GPU before our batch does.
-        guiGraphics.flush();
-
-        GuiQuadBatch batch = new GuiQuadBatch(guiGraphics);
-        batch.begin();
-        for (int pixelY = 0; pixelY < context.displayedMapSize; pixelY++) {
-            fillRow(batch, pixelY, context, color, filter, stripeAlignedOnly);
-        }
-        batch.end();
+    private static boolean borderCoversMinimap(MinimapBorderOverlayContext context) {
+        double blocksPerPixel = 2.0 * context.mapScale / context.zoom;
+        double reach =
+                context.logicalHalf * blocksPerPixel * (Math.abs(context.ps) + Math.abs(context.pc));
+        WorldBorderState border = context.border;
+        return border.minX <= context.playerX - reach
+                && border.maxX >= context.playerX + reach
+                && border.minZ <= context.playerZ - reach
+                && border.maxZ >= context.playerZ + reach;
     }
 
+    /**
+     * Scans one row for pixels outside of the border and collapses each stretch of them into a
+     * single run, so a row of hatching costs a handful of quads instead of one per pixel.
+     */
     private static void fillRow(
             GuiQuadBatch batch,
             int pixelY,
             MinimapBorderOverlayContext context,
-            int color,
-            PixelFilter filter,
-            boolean stripeAlignedOnly) {
+            int stripeColor,
+            int underlayColor) {
         int width = context.displayedMapSize;
         int pixelX = 0;
         int runStart = -1;
 
         while (pixelX < width) {
-            int runEnd = width;
-            if (stripeAlignedOnly) {
-                runEnd = Math.min(
-                        pixelX + OverlayConstants.stripeRunLength(pixelX, pixelY, context.border.stripePhase),
-                        width);
-                if (!OverlayConstants.isOnStripe(pixelX + pixelY, context.border.stripePhase)) {
-                    pixelX = runEnd;
-                    continue;
+            if (isOutsideBorderPixel(pixelX, pixelY, context)) {
+                if (runStart < 0) {
+                    runStart = pixelX;
                 }
-            }
-
-            while (pixelX < runEnd) {
-                if (filter.test(pixelX, pixelY, context)) {
-                    if (runStart < 0) {
-                        runStart = pixelX;
-                    }
-                } else if (runStart >= 0) {
-                    addRun(batch, runStart, pixelX, pixelY, context, color);
-                    runStart = -1;
-                }
-                pixelX++;
-            }
-
-            if (runStart >= 0) {
-                addRun(batch, runStart, pixelX, pixelY, context, color);
+            } else if (runStart >= 0) {
+                addRun(batch, runStart, pixelX, pixelY, context, stripeColor, underlayColor);
                 runStart = -1;
             }
+            pixelX++;
+        }
+
+        if (runStart >= 0) {
+            addRun(batch, runStart, width, pixelY, context, stripeColor, underlayColor);
         }
     }
 
+    /**
+     * Queues one run of hatching: the flat underlay first, then the stripes sitting on it.
+     *
+     * <p>The stripes are walked in whole-gap steps with {@link OverlayConstants#stripeRunLength}
+     * rather than pixel by pixel, so each gap costs one step instead of a test per pixel.</p>
+     */
     private static void addRun(
             GuiQuadBatch batch,
             int fromX,
             int toX,
             int pixelY,
             MinimapBorderOverlayContext context,
-            int color) {
+            int stripeColor,
+            int underlayColor) {
         batch.rect(
                 context.mapLeft + fromX,
                 context.mapTop + pixelY,
                 context.mapLeft + toX,
                 context.mapTop + pixelY + 1,
-                color);
+                underlayColor);
+
+        long phase = context.border.stripePhase;
+        int pixelX = fromX;
+        while (pixelX < toX) {
+            int runEnd = Math.min(
+                    pixelX + OverlayConstants.stripeRunLength(pixelX, pixelY, phase), toX);
+            if (OverlayConstants.isOnStripe(pixelX + pixelY, phase)) {
+                batch.rect(
+                        context.mapLeft + pixelX,
+                        context.mapTop + pixelY,
+                        context.mapLeft + runEnd,
+                        context.mapTop + pixelY + 1,
+                        stripeColor);
+            }
+            pixelX = runEnd;
+        }
     }
 
-    private static boolean isStripePixel(int pixelX, int pixelY, MinimapBorderOverlayContext context) {
-        if (!isPixelOnMinimapShape(pixelX, pixelY, context)) {
-            return false;
-        }
-        return isOutsideWorldBorder(pixelX, pixelY, context)
-                && OverlayConstants.isOnStripe(pixelX + pixelY, context.border.stripePhase);
+    /** True when the pixel is on the minimap and outside of the border - the hatched area. */
+    private static boolean isOutsideBorderPixel(int pixelX, int pixelY, MinimapBorderOverlayContext context) {
+        return isPixelOnMinimapShape(pixelX, pixelY, context)
+                && isOutsideWorldBorder(pixelX, pixelY, context);
     }
 
     private static boolean isPixelOnMinimapShape(int pixelX, int pixelY, MinimapBorderOverlayContext context) {
