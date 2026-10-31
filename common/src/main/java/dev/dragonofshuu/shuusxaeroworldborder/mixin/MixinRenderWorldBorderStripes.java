@@ -35,6 +35,7 @@ public abstract class MixinRenderWorldBorderStripes {
         try {
             MinimapBorderOverlay.drawStripedOutsideBorder(guiGraphics, context);
             MinimapBorderOverlay.drawWorldBorderOutline(guiGraphics, context);
+            MinimapBorderOverlay.drawPlayerToBorderLine(guiGraphics, context);
         } finally {
             guiGraphics.disableScissor();
         }

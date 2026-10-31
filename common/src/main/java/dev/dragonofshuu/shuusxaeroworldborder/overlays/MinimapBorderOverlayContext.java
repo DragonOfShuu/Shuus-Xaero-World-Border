@@ -1,9 +1,9 @@
 package dev.dragonofshuu.shuusxaeroworldborder.overlays;
 
-import dev.dragonofshuu.shuusxaeroworldborder.OverlayConstants;
+import dev.dragonofshuu.shuusxaeroworldborder.overlays.misc.WorldBorderState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.border.BorderStatus;
+
 import xaero.common.HudMod;
 import xaero.common.minimap.MinimapProcessor;
 import xaero.hud.entity.EntityUtils;
@@ -13,6 +13,12 @@ import xaero.hud.minimap.config.util.MinimapConfigClientUtils;
 import xaero.lib.client.config.ClientConfigManager;
 import xaero.lib.common.config.option.ConfigOption;
 
+/**
+ * Geometry of the on-screen minimap, plus the world border it shows.
+ *
+ * <p>Built once per frame from {@link MinimapProcessor} inside the minimap render hook; every
+ * value is expressed either in GUI pixels (screen placement) or in world blocks (border bounds).</p>
+ */
 public final class MinimapBorderOverlayContext {
     public final int displayedMapSize;
     public final int logicalMapSize;
@@ -27,12 +33,7 @@ public final class MinimapBorderOverlayContext {
     public final double pc;
     public final double playerX;
     public final double playerZ;
-    public final double borderMinX;
-    public final double borderMaxX;
-    public final double borderMinZ;
-    public final double borderMaxZ;
-    public final long stripePhase;
-    public final BorderStatus borderStatus;
+    public final WorldBorderState border;
 
     public MinimapBorderOverlayContext(
             int displayedMapSize,
@@ -47,12 +48,7 @@ public final class MinimapBorderOverlayContext {
             double pc,
             double playerX,
             double playerZ,
-            double borderMinX,
-            double borderMaxX,
-            double borderMinZ,
-            double borderMaxZ,
-            long stripePhase,
-            BorderStatus borderStatus) {
+            WorldBorderState border) {
         this.displayedMapSize = displayedMapSize;
         this.logicalMapSize = logicalMapSize;
         this.mapLeft = mapLeft;
@@ -65,14 +61,13 @@ public final class MinimapBorderOverlayContext {
         this.pc = pc;
         this.playerX = playerX;
         this.playerZ = playerZ;
-        this.borderMinX = borderMinX;
-        this.borderMaxX = borderMaxX;
-        this.borderMinZ = borderMinZ;
-        this.borderMaxZ = borderMaxZ;
-        this.stripePhase = stripePhase;
-        this.borderStatus = borderStatus;
+        this.border = border;
     }
 
+    /**
+     * Returns {@code null} when there is nothing to draw this frame (no level, no camera entity,
+     * or a degenerate minimap).
+     */
     public static MinimapBorderOverlayContext createRenderContext(
             MinimapProcessor minimapProcessor,
             int x,
@@ -84,7 +79,8 @@ public final class MinimapBorderOverlayContext {
             int boxSize,
             float partial) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) {
+        WorldBorderState border = WorldBorderState.fromLevel(mc.level);
+        if (border == null) {
             return null;
         }
 
@@ -127,13 +123,6 @@ public final class MinimapBorderOverlayContext {
         double pc = Math.cos(Math.PI - angle);
         double playerX = EntityUtils.getEntityX(renderEntity, partial);
         double playerZ = EntityUtils.getEntityZ(renderEntity, partial);
-        double borderMinX = mc.level.getWorldBorder().getMinX();
-        double borderMaxX = mc.level.getWorldBorder().getMaxX();
-        double borderMinZ = mc.level.getWorldBorder().getMinZ();
-        double borderMaxZ = mc.level.getWorldBorder().getMaxZ();
-        long stripePhase = System.currentTimeMillis() / OverlayConstants.getStripeAnimation(mc.level.getWorldBorder().getStatus());
-
-        var borderStatus = mc.level.getWorldBorder().getStatus();
 
         return new MinimapBorderOverlayContext(
                 displayedMapSize,
@@ -148,11 +137,6 @@ public final class MinimapBorderOverlayContext {
                 pc,
                 playerX,
                 playerZ,
-                borderMinX,
-                borderMaxX,
-                borderMinZ,
-                borderMaxZ,
-                stripePhase,
-                borderStatus);
+                border);
     }
 }
