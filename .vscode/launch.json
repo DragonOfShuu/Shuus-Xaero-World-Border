@@ -4,74 +4,92 @@
     {
       "type": "java",
       "request": "launch",
-      "name": "forge - Client",
+      "name": "Forge Client",
       "presentation": {
-        "group": "Mod Development - forge",
+        "group": "Mod Development",
         "order": 0
       },
       "projectName": "forge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/build/moddev/clientRunProgramArgs.txt"
+        "@${workspaceFolder}/forge/build/moddev/clientRunProgramArgs.txt"
       ],
-      "vmArgs": [
-        "@/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/build/moddev/clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dshuusxaerowb%%/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/bin/main"
-      ],
-      "cwd": "${workspaceFolder}/forge/run",
+      "vmArgs": "@${workspaceFolder}/forge/build/moddev/clientRunVmArgs.txt",
       "env": {
-        "MOD_CLASSES": "shuusxaerowb%%/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/bin/main"
+        "MOD_CLASSES": "shuusxaerowb%%${workspaceFolder}/forge/build/classes/java/main:shuusxaerowb%%${workspaceFolder}/forge/build/resources/main"
       },
+      "cwd": "${workspaceFolder}/forge/run",
       "console": "internalConsole",
-      "shortenCommandLine": "none"
+      "shortenCommandLine": "none",
+      "preLaunchTask": "gradle: forge classes"
     },
     {
       "type": "java",
       "request": "launch",
-      "name": "forge - Data",
+      "name": "Forge Server",
       "presentation": {
-        "group": "Mod Development - forge",
+        "group": "Mod Development",
         "order": 1
       },
       "projectName": "forge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/build/moddev/dataRunProgramArgs.txt"
+        "@${workspaceFolder}/forge/build/moddev/serverRunProgramArgs.txt"
       ],
-      "vmArgs": [
-        "@/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/build/moddev/dataRunVmArgs.txt",
-        "-Dfml.modFolders\u003dshuusxaerowb%%/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/bin/main"
-      ],
-      "cwd": "${workspaceFolder}/forge/run",
+      "vmArgs": "@${workspaceFolder}/forge/build/moddev/serverRunVmArgs.txt",
       "env": {
-        "MOD_CLASSES": "shuusxaerowb%%/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/bin/main"
+        "MOD_CLASSES": "shuusxaerowb%%${workspaceFolder}/forge/build/classes/java/main:shuusxaerowb%%${workspaceFolder}/forge/build/resources/main"
       },
+      "cwd": "${workspaceFolder}/forge/run",
       "console": "internalConsole",
-      "shortenCommandLine": "none"
+      "shortenCommandLine": "none",
+      "preLaunchTask": "gradle: forge classes"
     },
     {
       "type": "java",
       "request": "launch",
-      "name": "forge - Server",
+      "name": "Forge Data",
       "presentation": {
-        "group": "Mod Development - forge",
+        "group": "Mod Development",
         "order": 2
       },
       "projectName": "forge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/build/moddev/serverRunProgramArgs.txt"
+        "@${workspaceFolder}/forge/build/moddev/dataRunProgramArgs.txt"
       ],
-      "vmArgs": [
-        "@/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/build/moddev/serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dshuusxaerowb%%/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/bin/main"
-      ],
-      "cwd": "${workspaceFolder}/forge/run",
+      "vmArgs": "@${workspaceFolder}/forge/build/moddev/dataRunVmArgs.txt",
       "env": {
-        "MOD_CLASSES": "shuusxaerowb%%/xdrive/Assets/Code/MinecraftMods/Shuus-Xaero-World-Border/forge/bin/main"
+        "MOD_CLASSES": "shuusxaerowb%%${workspaceFolder}/forge/build/classes/java/main:shuusxaerowb%%${workspaceFolder}/forge/build/resources/main"
       },
+      "cwd": "${workspaceFolder}/forge/run",
       "console": "internalConsole",
-      "shortenCommandLine": "none"
+      "shortenCommandLine": "none",
+      "preLaunchTask": "gradle: forge classes"
+    },
+    {
+      "type": "java",
+      "request": "attach",
+      "name": "Fabric Client (debug)",
+      "presentation": {
+        "group": "Mod Development",
+        "order": 3
+      },
+      "hostName": "localhost",
+      "port": 5005,
+      "preLaunchTask": "fabric: runClient (debug)"
+    },
+    {
+      "type": "java",
+      "request": "attach",
+      "name": "Fabric Server (debug)",
+      "presentation": {
+        "group": "Mod Development",
+        "order": 4
+      },
+      "hostName": "localhost",
+      "port": 5005,
+      "preLaunchTask": "fabric: runServer (debug)"
     }
   ]
 }

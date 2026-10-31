@@ -33,13 +33,19 @@ legacyForge {
     runs {
         client {
             client()
+            // The generated VS Code configs point MOD_CLASSES at the Eclipse/JDT output (forge/bin/main),
+            // which holds an unexpanded mods.toml and crashes Forge at startup. .vscode/launch.json is
+            // maintained by hand instead and points at Gradle's processed output.
+            disableIdeRun()
         }
         data {
             data()
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            disableIdeRun()
         }
         server {
             server()
+            disableIdeRun()
         }
     }
 

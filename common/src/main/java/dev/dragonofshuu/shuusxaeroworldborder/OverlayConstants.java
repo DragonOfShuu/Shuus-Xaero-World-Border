@@ -16,6 +16,11 @@ public class OverlayConstants {
     public static final int STRIPE_WIDTH = 6;
     /** Thickness of the solid line drawn along the border itself on the world map, in GUI pixels. */
     public static final int WORLDMAP_OUTLINE_WIDTH = 2;
+    /**
+     * Opaque white, used on both overlays for the border a moving border is heading towards and for
+     * the guide line pointing at it. White because it has to stay readable over the hatching.
+     */
+    public static final int DESTINATION_COLOR = 0xFFFFFFFF;
 
     /** Stripe fill, drawn outside of the border. Darker than vanilla's border colour. */
     public static int getStripeColor(WorldBorderState border) {

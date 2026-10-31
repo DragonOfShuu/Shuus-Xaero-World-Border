@@ -1,4 +1,4 @@
-package dev.dragonofshuu.shuusxaeroworldborder.mixin.config;
+package dev.dragonofshuu.shuusxaeroworldborder.mixin.plugin;
 
 import java.util.List;
 import java.util.Set;

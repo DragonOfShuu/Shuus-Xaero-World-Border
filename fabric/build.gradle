@@ -45,3 +45,11 @@ loom {
         }
     }
 }
+
+// `-Pdebug` makes the game start suspended, waiting for a VS Code debugger on port 5005.
+// Used by the "Fabric Client/Server (debug)" entries in .vscode/launch.json.
+if (project.hasProperty('debug')) {
+    tasks.withType(JavaExec).configureEach {
+        jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005'
+    }
+}

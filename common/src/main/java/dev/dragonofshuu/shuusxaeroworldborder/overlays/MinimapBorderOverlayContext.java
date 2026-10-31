@@ -29,6 +29,8 @@ public final class MinimapBorderOverlayContext {
     public final double zoom;
     /** mapScale = renderScale / minimapScale: used to convert overlay pixels to world blocks. */
     public final double mapScale;
+    /** In-game GUI scale */
+    public final double guiScale;
     public final double ps;
     public final double pc;
     public final double playerX;
@@ -44,6 +46,7 @@ public final class MinimapBorderOverlayContext {
             boolean circleShape,
             double zoom,
             double mapScale,
+            double guiScale,
             double ps,
             double pc,
             double playerX,
@@ -57,6 +60,7 @@ public final class MinimapBorderOverlayContext {
         this.circleShape = circleShape;
         this.zoom = zoom;
         this.mapScale = mapScale;
+        this.guiScale = guiScale;
         this.ps = ps;
         this.pc = pc;
         this.playerX = playerX;
@@ -133,6 +137,7 @@ public final class MinimapBorderOverlayContext {
                 circleShape,
                 zoom,
                 mapScale,
+                mc.getWindow().getGuiScale(),
                 ps,
                 pc,
                 playerX,

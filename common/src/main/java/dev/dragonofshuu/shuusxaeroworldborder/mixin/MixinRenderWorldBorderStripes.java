@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import dev.dragonofshuu.shuusxaeroworldborder.overlays.MinimapBorderOverlay;
 import dev.dragonofshuu.shuusxaeroworldborder.overlays.MinimapBorderOverlayContext;
+import dev.dragonofshuu.shuusxaeroworldborder.overlays.misc.WorldBorderVisibility;
 import net.minecraft.client.gui.GuiGraphics;
 import xaero.common.graphics.CustomVertexConsumers;
 import xaero.common.minimap.MinimapProcessor;
@@ -26,6 +27,10 @@ public abstract class MixinRenderWorldBorderStripes {
             float partial,
             CustomVertexConsumers cvc,
             CallbackInfo ci) {
+        if (!WorldBorderVisibility.isVisible()) {
+            return;
+        }
+
         MinimapBorderOverlayContext context = MinimapBorderOverlayContext.createRenderContext((MinimapProcessor) (Object) this, x, y, width, height, scale, size, boxSize, partial);
         if (context == null) {
             return;
@@ -35,7 +40,9 @@ public abstract class MixinRenderWorldBorderStripes {
         try {
             MinimapBorderOverlay.drawStripedOutsideBorder(guiGraphics, context);
             MinimapBorderOverlay.drawWorldBorderOutline(guiGraphics, context);
+            MinimapBorderOverlay.drawTargetBorderOutline(guiGraphics, context);
             MinimapBorderOverlay.drawPlayerToBorderLine(guiGraphics, context);
+            MinimapBorderOverlay.drawPlayerToTargetLine(guiGraphics, context);
         } finally {
             guiGraphics.disableScissor();
         }

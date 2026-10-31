@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import dev.dragonofshuu.shuusxaeroworldborder.overlays.WorldmapBorderOverlay;
 import dev.dragonofshuu.shuusxaeroworldborder.overlays.WorldmapBorderOverlayContext;
+import dev.dragonofshuu.shuusxaeroworldborder.overlays.misc.WorldBorderVisibility;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -63,6 +64,10 @@ public abstract class MixinWorldmapRenderWorldBorderStripes {
             int scaledMouseY,
             float delta,
             CallbackInfo ci) {
+        if (!WorldBorderVisibility.isVisible()) {
+            return;
+        }
+
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
 

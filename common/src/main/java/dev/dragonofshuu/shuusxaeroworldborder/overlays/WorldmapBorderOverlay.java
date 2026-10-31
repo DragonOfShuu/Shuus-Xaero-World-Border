@@ -19,8 +19,6 @@ import net.minecraft.client.gui.GuiGraphics;
 public final class WorldmapBorderOverlay {
     /** Thickness of the lines drawn from the player to a border, in GUI pixels. */
     private static final float PLAYER_LINE_WIDTH = 2.0f;
-    /** Opaque white, matching {@link AntlinePattern}. */
-    private static final int PLAYER_TARGET_LINE_COLOR = 0xFFFFFFFF;
 
     /**
      * Draws the whole overlay, back to front: hatching outside of the border, the border line on it,
@@ -140,7 +138,7 @@ public final class WorldmapBorderOverlay {
         if (!context.border.isMoving()) {
             return;
         }
-        drawPlayerToRectLine(guiGraphics, context, context.targetRect, PLAYER_TARGET_LINE_COLOR);
+        drawPlayerToRectLine(guiGraphics, context, context.targetRect, OverlayConstants.DESTINATION_COLOR);
     }
 
     /**

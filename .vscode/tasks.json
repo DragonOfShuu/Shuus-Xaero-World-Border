@@ -1,0 +1,81 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "gradle: forge classes",
+      "detail": "Compile forge and expand its resources into forge/build/resources/main",
+      "type": "shell",
+      "command": "${workspaceFolder}/gradlew",
+      "args": [":forge:classes", "--console=plain"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "group": "build", "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "gradle: fabric classes",
+      "detail": "Compile fabric and expand its resources into fabric/build/resources/main",
+      "type": "shell",
+      "command": "${workspaceFolder}/gradlew",
+      "args": [":fabric:classes", "--console=plain"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "group": "build", "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "fabric: runClient",
+      "detail": "Run the Fabric client through Gradle",
+      "type": "shell",
+      "command": "${workspaceFolder}/gradlew",
+      "args": [":fabric:runClient", "--console=plain"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "group": "run", "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "fabric: runServer",
+      "detail": "Run the Fabric server through Gradle",
+      "type": "shell",
+      "command": "${workspaceFolder}/gradlew",
+      "args": [":fabric:runServer", "--console=plain"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "group": "run", "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "fabric: runClient (debug)",
+      "detail": "Run the Fabric client suspended, waiting for a debugger on port 5005",
+      "type": "shell",
+      "command": "${workspaceFolder}/gradlew",
+      "args": [":fabric:runClient", "-Pdebug", "--console=plain"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "group": "run", "reveal": "always", "panel": "dedicated" },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": [{ "regexp": "^$$$" }],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*$",
+          "endsPattern": "Listening and transport started.*"
+        }
+      }
+    },
+    {
+      "label": "fabric: runServer (debug)",
+      "detail": "Run the Fabric server suspended, waiting for a debugger on port 5005",
+      "type": "shell",
+      "command": "${workspaceFolder}/gradlew",
+      "args": [":fabric:runServer", "-Pdebug", "--console=plain"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "group": "run", "reveal": "always", "panel": "dedicated" },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": [{ "regexp": "^$$$" }],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*$",
+          "endsPattern": "Listening and transport started.*"
+        }
+      }
+    }
+  ]
+}

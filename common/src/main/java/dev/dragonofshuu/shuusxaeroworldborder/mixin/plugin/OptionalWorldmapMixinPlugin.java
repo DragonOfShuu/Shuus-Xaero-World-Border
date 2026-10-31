@@ -1,4 +1,4 @@
-package dev.dragonofshuu.shuusxaeroworldborder.mixin.config;
+package dev.dragonofshuu.shuusxaeroworldborder.mixin.plugin;
 
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
