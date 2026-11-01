@@ -1,6 +1,33 @@
+# Shuu's Xaero World Border
+
+![World map example](/docs/world-map.png)
+
+A simple mod that adds support for viewing the world border through xaero's world map and minimap mod.
+
+The map changes color depending on if the border is stationary, growing, or shrinking:
+
+![Minimap shrink](/docs/minimap-shrink.png) ![Minimap grow](/docs/minimap-grow.png) ![Minimap stationary](/docs/minimap.png)
+
+You may also be able to enable or disable the visibility of the overlay via the world map mod. Note that when you turn it off in the world map, it also turns it off in the minimap!
+
+![Toggling World Border](/docs/toggleable-world-border.gif)
+
+# FAQ
+
+## Do I need both the minimap mod and world map, or can I just have one or the other?
+
+You can have both, one of either, or even none of them! This mod entirely detects if the mod is available, and if so it injects the necessary mixin to add support.
+
+## What version of xaero's minimap and world map does it support?
+
+At the time of writing, the mod supports minimap >26.6.0, and worldmap >1.47.0. If future variants are broken, try the direct versions I mentioned.
+<!-- xaero_minimap_mod_version=26.6.0
+xaero_worldmap_mod_version=1.47.0 -->
+
+
 # Developer Notes
 
-Fabric is a Bring Your Own type situation, where you have to install the mod yourself. For forge, it installs the mod itself. I don't know why they won't play nicely together, but they don't. I'm just dealing with two children here and none of them are mine. If you are reading this, hi.
+Fabric is a Bring Your Own requires you to bring the xaero mods and put them in the mod folder, where you have to install the mod yourself. For forge, it installs the mod itself. I don't know why they won't play nicely together, but they don't.
 
 ## Running from VS Code
 
